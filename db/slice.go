@@ -1,4 +1,4 @@
-package util
+package db
 import "bytes"
 import "math"
 
@@ -17,7 +17,7 @@ func NewSlice(data []byte, size uint) *Slice {
 func NewSliceFromBytes(data []byte)  *Slice{
 	s :=new(Slice)
 	s.data = data
-	s.size = len(data)
+	s.size = uint(len(data))
 	return s
 }
 
