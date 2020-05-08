@@ -1,5 +1,7 @@
 package db
 
+import "encoding/binary"
+
 func VarintLength(v uint64) int {
 	len := 1
 	for v >= 128 {
@@ -61,4 +63,47 @@ func EncodeVarint32(dst []byte, v uint32) []byte{
 		ptr++
 	}
 	return dst[ptr:]
+}
+
+func GetVarint32Ptr(p []byte, limit int, value *uint32) []byte {
+	var ptrIndex = 0
+	if ptrIndex < limit {
+		result := binary.LittleEndian.Uint32(p)
+		if (result & 128) == 0 {
+			*value = result
+			return p[1:]
+		}
+	}
+	return GetVarint32PtrFallback(p, limit, value)
+}
+
+func GetVarint32PtrFallback(p []byte, limit int, value *uint32) []byte {
+	var result uint32 = 0
+	pIndex := 0
+	var shift uint
+	for shift = 0; shift <= 28 && pIndex < limit; shift += 7 {
+		byteValue := binary.LittleEndian.Uint32(p)
+		pIndex++
+		if byteValue&uint32(128) != 0 {
+			// More bytes are present
+			result |= (byteValue & 127) << shift
+		} else {
+			result |= byteValue << shift
+			*value = result
+			return p[pIndex:]
+		}
+	}
+	return nil
+}
+
+func DecodeFixed64(buffer []byte) uint64 {
+	// Recent clang and gcc optimize this to a single mov / ldr instruction.
+	return binary.LittleEndian.Uint64(buffer)
+}
+
+
+func GetLengthPrefixedSlice(data []byte) *Slice{
+	var len uint32
+	p := GetVarint32Ptr(data, 5, &len)  // +5: we assume "p" is not corrupted
+	return NewSlice(p, int(len))
 }

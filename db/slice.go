@@ -7,10 +7,10 @@ type Slice struct {
 	size uint
 }
 
-func NewSlice(data []byte, size uint) *Slice {
+func NewSlice(data []byte, size int) *Slice {
 	s := new(Slice)
 	s.data = data
-	s.size = size
+	s.size = uint(size)
 	return s
 }
 

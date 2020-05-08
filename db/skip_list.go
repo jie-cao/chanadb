@@ -40,7 +40,7 @@ func (iterator *Iterator) Valid() bool {
 
 // Returns the key at the current position.
 // REQUIRES: Valid()
-func (iterator *Iterator) key() string {
+func (iterator *Iterator) Key() string {
 	return iterator.node.key
 }
 
