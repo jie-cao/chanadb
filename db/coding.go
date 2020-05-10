@@ -101,9 +101,34 @@ func DecodeFixed64(buffer []byte) uint64 {
 	return binary.LittleEndian.Uint64(buffer)
 }
 
+func DecodeFixed32(buffer []byte) uint32 {
+// Recent clang and gcc optimize this to a single mov / ldr instruction.
+	return binary.LittleEndian.Uint32(buffer)
+}
+
+func EncodeFixed32(buffer []byte, value uint32) {
+	// Recent clang and gcc optimize this to a single mov / str instruction.
+	buffer[0] = uint8(value)
+	buffer[1] = uint8(value >> 8)
+	buffer[2] = uint8(value >> 16)
+	buffer[3] = uint8(value >> 24)
+}
+
 
 func GetLengthPrefixedSlice(data []byte) *Slice{
 	var len uint32
 	p := GetVarint32Ptr(data, 5, &len)  // +5: we assume "p" is not corrupted
 	return NewSlice(p, int(len))
+}
+
+func PutLengthPrefixedSlice(dst []byte, value *Slice) {
+	PutVarint32(dst, uint32(value.Size()))
+	dst = append(dst, uint32(value.Size()))
+}
+
+
+func PutVarint32(dst []byte, v uint32) {
+	buf := make([]byte, 5)
+	ptr := EncodeVarint32(buf, v)
+	dst = append(dst, ptr[5:]...)
 }

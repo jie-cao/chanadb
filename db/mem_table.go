@@ -1,7 +1,5 @@
 package db
 
-import "strings"
-
 type MemTable struct {
 	table *SkipList
 	ref   int
@@ -37,9 +35,9 @@ func (memtable *MemTable) Add(sequenceNumber uint64, valueType byte, key *Slice,
 }
 
 func (s *SkipList) Get(key *LookupKey, value *string, status *Status) (bool, *Status) {
-	memkey := key.memtableKey()
+	memKey := key.memtableKey()
 	iter := newIterator(s)
-	iter.Seek(string(memkey.Data()))
+	iter.Seek(string(memKey.Data()))
 	if iter.Valid() {
 		// entry format is:
 		//    klength  varint32
@@ -65,7 +63,7 @@ func (s *SkipList) Get(key *LookupKey, value *string, status *Status) (bool, *St
 					return true, nil
 				}
 			case kTypeDeletion:
-				status := NotFound(&Slice(), &Slice())
+				status := NotFound(nil, nil)
 				return true, status
 			}
 		}
