@@ -8,6 +8,10 @@ func (writableFile *WritableFile) Sync() Status {
 
 }
 
-func (writableFile *WritableFile) Append() Status {
+func (writableFile *WritableFile) Append(slice *Slice) Status {
+
+}
+
+func (writableFile *WritableFile) Flush() Status {
 
 }

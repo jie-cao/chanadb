@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="368b9458-2261-4bfd-8698-0949196e5548" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/db/log_write.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/version_set.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/write_option.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/crc32c.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/status.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/status.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/log_write.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/log_write.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/writable_file.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/writable_file.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/write_batch.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/write_batch.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/write_batch_internal.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/write_batch_internal.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/writer.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/writer.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,18 +34,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/db/slice.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="23" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
-              <folding>
-                <element signature="e#11#39#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/db/status.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="345">
@@ -60,11 +42,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/db/log_write.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="365">
-              <caret line="57" column="74" lean-forward="true" selection-start-line="57" selection-start-column="74" selection-end-line="57" selection-end-column="74" />
+            <state relative-caret-position="987">
+              <caret line="87" column="1" lean-forward="true" selection-start-line="87" selection-start-column="1" selection-end-line="87" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/db/crc32c.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="36" selection-start-line="10" selection-start-column="36" selection-end-line="10" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/db/skip_list.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2590">
+              <caret line="35" column="37" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -81,8 +81,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/db/writable_file.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="1" lean-forward="true" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+            <state relative-caret-position="225">
+              <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
             </state>
           </provider>
         </entry>
@@ -101,15 +101,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="45">
               <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/db/coding.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1965">
-              <caret line="131" column="33" selection-start-line="131" selection-start-column="33" selection-end-line="131" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -159,9 +150,10 @@
         <option value="$PROJECT_DIR$/db/version_set.go" />
         <option value="$PROJECT_DIR$/db/write_batch_internal.go" />
         <option value="$PROJECT_DIR$/db/write_batch.go" />
-        <option value="$PROJECT_DIR$/db/writable_file.go" />
         <option value="$PROJECT_DIR$/db/db.go" />
         <option value="$PROJECT_DIR$/db/log_write.go" />
+        <option value="$PROJECT_DIR$/db/writable_file.go" />
+        <option value="$PROJECT_DIR$/db/crc32c.go" />
       </list>
     </option>
   </component>
@@ -300,16 +292,6 @@
     <entry file="file://$PROJECT_DIR$/satidb.go">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/db/skip_list.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="482">
-          <caret line="43" column="28" lean-forward="true" selection-start-line="43" selection-start-column="28" selection-end-line="43" selection-end-column="28" />
-          <folding>
-            <element signature="e#12#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/db/mem_table.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -421,13 +403,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db/writable_file.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="1" lean-forward="true" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/db/db.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="253">
@@ -435,10 +410,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/db/skip_list.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2590">
+          <caret line="35" column="37" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/writable_file.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/db/log_write.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
-          <caret line="57" column="74" lean-forward="true" selection-start-line="57" selection-start-column="74" selection-end-line="57" selection-end-column="74" />
+        <state relative-caret-position="987">
+          <caret line="87" column="1" lean-forward="true" selection-start-line="87" selection-start-column="1" selection-end-line="87" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/crc32c.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="36" selection-start-line="10" selection-start-column="36" selection-end-line="10" selection-end-column="36" />
         </state>
       </provider>
     </entry>

@@ -65,6 +65,24 @@ func (logWriter *LogWriter) AddRecord(slice *Slice) {
 }
 
 func (logWriter *LogWriter) EmitPhysicalRecord(t byte, data []byte, length uint) Status{
+	buf := make([]byte, kHeaderSize)
 
+	buf[4] = byte(length & 0xff)
+	buf[5] = byte(length >> 8)
+	buf[6] = byte(t)
+
+	// crc
+
+	s := logWriter.dest.Append(NewSlice(buf, kHeaderSize))
+	if s.OK() {
+		s = logWriter.dest.Append(NewSlice(data, int(length)))
+		if s.OK() {
+			s = logWriter.dest.Flush()
+		}
+	}
+
+	logWriter.blockOffset += int(kHeaderSize + length)
+
+	return s
 
 }
