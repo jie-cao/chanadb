@@ -20,3 +20,7 @@ func (writeBatch *WriteBatch) Delete(key *Slice) {
 func (writeBatch *WriteBatch) Append(source *WriteBatch) {
 	Append(writeBatch, source)
 }
+
+func (writeBatch *WriteBatch) Clear()  {
+	writeBatch.rep = make([]byte, kHeader)
+}

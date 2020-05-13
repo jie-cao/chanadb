@@ -16,102 +16,144 @@ type DB struct {
 	logFileNumber uint64
 	seed uint32 // For sampling.
 	backgroundWorkFinishedSignal sync.Cond
-	WritableFile* logfile_;
-	uint64_t logfile_number_ GUARDED_BY(mutex_);
-	log::Writer* log_;
-
+	versions *VersionSet
 	// Queue of writers.
-	std::deque<Writer*> writers_ GUARDED_BY(mutex_);
-	WriteBatch* tmp_batch_ GUARDED_BY(mutex_);
+	writers []*Writer
+	tmpBatch *WriteBatch
+	logWriter *LogWriter
+	logfile *WritableFile
+	bgError Status
+}
 
-	SnapshotList snapshots_ GUARDED_BY(mutex_);
+func (db *DB) MakeRoomForWrite(force bool) Status  {
 
-	// Set of table files to protect from deletion because they are
-	// part of ongoing compactions.
-	std::set<uint64_t> pending_outputs_ GUARDED_BY(mutex_);
-
-	// Has a background compaction been scheduled or is running?
-	bool background_compaction_scheduled_ GUARDED_BY(mutex_);
-
-	ManualCompaction* manual_compaction_ GUARDED_BY(mutex_);
-
-	VersionSet* const versions_ GUARDED_BY(mutex_);
-
-	// Have we encountered a background error in paranoid mode?
-	Status bg_error_ GUARDED_BY(mutex_);
-
-	CompactionStats stats_[config::kNumLevels] GUARDED_BY(mutex_);
 }
 
 func (db *DB) Write(options *WriteOption, updates *WriteBatch) Status {
-	w := newWriter(&db.mutex)
+	w := newWriter(db.mutex)
 	w.batch = updates
 	w.sync = options.sync
 	w.done = false
+	db.mutex.Lock()
+	db.writers = append(db.writers, w)
+	for !w.done && w != db.writers[0] {
+		w.cv.Wait()
+	}
 
-MutexLock l(&mutex_);
-writers_.push_back(&w);
-while (!w.done && &w != writers_.front()) {
-w.cv.Wait();
-}
-if (w.done) {
-return w.status;
+	if w.done {
+		return w.status
+	}
+
+	// May temporarily unlock and wait.
+	status := db.MakeRoomForWrite(updates == nil)
+	lastSequence := db.versions.LastSequence()
+	lastWriter := w
+	if status.OK() && updates != nil { // nullptr batch is for compactions
+		writeBatch := db.BuildBatchGroup(&lastWriter)
+		SetSequence(writeBatch, lastSequence+1)
+		lastSequence += uint64(Count(writeBatch))
+
+		// Add to log and apply to memtable.  We can release the lock
+		// during this phase since &w is currently responsible for logging
+		// and protects against concurrent loggers and concurrent writes
+		// into mem_.
+		{
+			db.mutex.Unlock()
+			db.logWriter.AddRecord(Contents(writeBatch))
+			syncError := false
+			if status.OK() && options.sync {
+				status = db.logfile.Sync()
+				if !status.OK() {
+					syncError = true
+				}
+			}
+
+			if status.OK() {
+				status = InsertInto(writeBatch, db.mem)
+			}
+
+			db.mutex.Lock()
+			if syncError {
+				// The state of the log file is indeterminate: the log record we
+				// just added may or may not show up when the DB is re-opened.
+				// So we force the DB into a mode where all future writes fail.
+				db.RecordBackgroundError(status)
+			}
+		}
+
+		if writeBatch == db.tmpBatch {
+			db.tmpBatch.Clear()
+		}
+		db.versions.SetLastSequence(lastSequence)
+
+	}
+
+	for {
+		ready := db.writers[0]
+		db.writers = db.writers[1:]
+		if ready != w {
+			ready.status = status
+			ready.done = true
+			ready.cv.Signal()
+		}
+		if ready == lastWriter {
+			break
+		}
+	}
+
+	// Notify new head of write queue
+	if len(db.writers) != 0 {
+		db.writers[0].cv.Signal()
+	}
+
+	return status
 }
 
-// May temporarily unlock and wait.
-Status status = MakeRoomForWrite(updates == nullptr);
-uint64_t last_sequence = versions_->LastSequence();
-Writer* last_writer = &w;
-if (status.ok() && updates != nullptr) {  // nullptr batch is for compactions
-WriteBatch* write_batch = BuildBatchGroup(&last_writer);
-WriteBatchInternal::SetSequence(write_batch, last_sequence + 1);
-last_sequence += WriteBatchInternal::Count(write_batch);
-
-// Add to log and apply to memtable.  We can release the lock
-// during this phase since &w is currently responsible for logging
-// and protects against concurrent loggers and concurrent writes
-// into mem_.
-{
-mutex_.Unlock();
-status = log_->AddRecord(WriteBatchInternal::Contents(write_batch));
-bool sync_error = false;
-if (status.ok() && options.sync) {
-status = logfile_->Sync();
-if (!status.ok()) {
-sync_error = true;
-}
-}
-if (status.ok()) {
-status = WriteBatchInternal::InsertInto(write_batch, mem_);
-}
-mutex_.Lock();
-if (sync_error) {
-// The state of the log file is indeterminate: the log record we
-// just added may or may not show up when the DB is re-opened.
-// So we force the DB into a mode where all future writes fail.
-RecordBackgroundError(status);
-}
-}
-if (write_batch == tmp_batch_) tmp_batch_->Clear();
-
-versions_->SetLastSequence(last_sequence);
+func (db *DB) RecordBackgroundError(status Status)  {
+	if db.bgError.OK() {
+		db.bgError = status
+		db.backgroundWorkFinishedSignal.Broadcast()
+	}
 }
 
-while (true) {
-Writer* ready = writers_.front();
-writers_.pop_front();
-if (ready != &w) {
-ready->status = status;
-ready->done = true;
-ready->cv.Signal();
-}
-if (ready == last_writer) break;
-}
+func (db *DB) BuildBatchGroup(lastWriter **Writer) *WriteBatch{
+	first := db.writers[0]
+	result := first.batch
+	size := ByteSize(first.batch)
 
-// Notify new head of write queue
-if (!writers_.empty()) {
-writers_.front()->cv.Signal();
-}
+	maxSize := 1 << 20
+	if size <= (128 << 10) {
+		maxSize = size + (128 << 10)
+	}
 
-return status;
+	*lastWriter = first
+	writerIdx := 0
+	for ; writerIdx != len(db.writers); writerIdx++ {
+		w := db.writers[writerIdx]
+		if w.sync && !first.sync {
+			// do not include a sync writer into a batch handled by a non-sync writer
+			break
+		}
+
+		if w.batch != nil {
+			size += ByteSize(w.batch)
+			if size > maxSize {
+
+				// Do not make batch too big
+				break
+			}
+
+			// Append to *result
+			if result == first.batch {
+
+				// Switch to temporary batch instead of disturbing callers's batch
+				result = db.tmpBatch
+				Append(result, first.batch)
+			}
+			Append(result, w.batch)
+		}
+		*lastWriter = w
+	}
+
+	return result
 }

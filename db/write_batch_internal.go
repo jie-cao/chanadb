@@ -19,3 +19,19 @@ func Append(dst *WriteBatch, src *WriteBatch) {
 	SetCount(dst, Count(dst) + Count(src))
 	dst.rep = append(dst.rep, src.rep[kHeader:kHeader + len(src.rep) - kHeader]...)
 }
+
+func ByteSize(batch *WriteBatch) int {
+	return len(batch.rep)
+}
+
+func SetSequence(batch *WriteBatch, seq uint64) {
+	EncodeFixed64(batch.rep, seq)
+}
+
+func Contents(batch *WriteBatch) *Slice{
+	return NewSliceFromBytes(batch.rep)
+}
+
+func InsertInto(batch *WriteBatch, memtTable *MemTable) Status {
+
+}

@@ -19,3 +19,8 @@ func  NotFound(msg *Slice, msg2 *Slice) *Status {
 	status.state = kNotFound
 	return status
 }
+
+
+func (status *Status) OK() bool {
+
+}
