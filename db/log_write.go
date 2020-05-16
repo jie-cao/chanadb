@@ -30,7 +30,7 @@ func (logWriter *LogWriter) AddRecord(slice *Slice) {
 		leftOver := kBlockSize - logWriter.blockOffset
 		if leftOver < kHeaderSize {
 			if leftOver > 0 {
-				logWriter.dest.Append(NewSlice("\x00\x00\x00\x00\x00\x00", leftOver))
+				logWriter.dest.Append(NewSlice([]byte("\x00\x00\x00\x00\x00\x00"), leftOver))
 			}
 			logWriter.blockOffset = 0
 		}
@@ -39,7 +39,7 @@ func (logWriter *LogWriter) AddRecord(slice *Slice) {
 		if leftOver < available {
 			fragmentLength = left
 		} else {
-			fragmentLength = available
+			fragmentLength = uint(available)
 		}
 
 		var recordType byte

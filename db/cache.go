@@ -17,7 +17,7 @@ type LRUHandle struct {
 }
 
 func (lruHandle *LRUHandle) Key() *Slice {
-	return NewSlice(lruHandle.keyData, lruHandle.keyLength)
+	return NewSlice(lruHandle.keyData, int(lruHandle.keyLength))
 }
 
 type HandleTable struct {

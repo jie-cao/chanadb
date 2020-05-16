@@ -19,6 +19,12 @@ func  NotFound(msg *Slice, msg2 *Slice) *Status {
 	status.state = kNotFound
 	return status
 }
+// Return error status of an appropriate type.
+func  StatusOK() *Status {
+	status := new(Status)
+	status.state = kOK
+	return status
+}
 
 
 func (status *Status) OK() bool {
