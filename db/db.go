@@ -26,6 +26,15 @@ type DB struct {
 }
 
 func (db *DB) MakeRoomForWrite(force bool) Status  {
+	allowDelay := !force
+	var s Status
+	for {
+		if !db.bgError.OK() {
+			s = db.bgError
+			break
+		} else if allowDelay && db.versions.
+
+	}
 
 }
 
