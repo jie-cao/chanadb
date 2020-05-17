@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="368b9458-2261-4bfd-8698-0949196e5548" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/db/compaction.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/internal_key.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/read_option.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/cache.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/cache.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/log_write.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/log_write.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/status.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/status.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/writable_file.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/writable_file.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/version_set.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/version_set.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,5 +106,9 @@
       <screen x="0" y="0" width="3413" height="1880" />
     </state>
     <state x="559" y="592" key="#GOROOT/0.0.3413.1880@0.0.3413.1880" timestamp="1589554139561" />
+    <state width="498" height="446" key="SwitcherDM" timestamp="1589642110769">
+      <screen x="0" y="0" width="3413" height="1880" />
+    </state>
+    <state width="498" height="446" key="SwitcherDM/0.0.3413.1880@0.0.3413.1880" timestamp="1589642110769" />
   </component>
 </project>
