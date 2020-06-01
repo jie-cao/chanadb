@@ -32,7 +32,26 @@ func (db *DB) MakeRoomForWrite(force bool) Status  {
 		if !db.bgError.OK() {
 			s = db.bgError
 			break
-		} else if allowDelay && db.versions.
+		} else if allowDelay && db.versions.NumLevelFiles(0) >=  {
+			db.mutex.Unlock()
+			//sleep for 1 millisenconds
+			SleepForMicroseconds(1000)
+			allowDelay = false //Do not delay a single write more than once
+			db.mutex.Lock()
+		} else if !force && db.mem.ApproximateMemoryUsage() <= {
+			// This room in current memtable
+			break
+		} else if db.imm != nil {
+			db.backgroundWorkFinishedSignal.Wait()
+		} else if (db.versions.NumLevelFiles(0) >= ) {
+			// There are too many levlel-0 files
+			db.backgroundWorkFinishedSignal.Wait()
+		} else {
+			db.versions.NewFileNumber()
+			var lwritableFile *WritableFile
+			s = NewWrtitableFile()
+
+		}
 
 	}
 

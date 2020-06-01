@@ -14,8 +14,7 @@ type Version struct {
 	next *Version // 在所处的VersionSet中，后一个Version指针
 	prev *Version // 在所处的VersionSet中，前一个Version指针
 	refs int //当前版本引用数，只有为了0才会被释放
-	files []FileMetaData //当前版本中每一个level所包含的文件信息
-
+	files [][]FileMetaData //当前版本中每一个level所包含的文件信息
 }
 
 
@@ -57,7 +56,6 @@ func (versionEdit *VersionEdit) EncodeTo(dest string) {
 		PutVarint32([]byte(dest), kComparator)
 		PutLengthPrefixedSlice([]byte(dest), versionEdit.comparator)
 	}
-
 }
 
 
@@ -92,9 +90,18 @@ type VersionSet struct {
 }
 
 func (versionSet *VersionSet) LastSequence() uint64{
-
+	return versionSet.lastSequence
 }
 
 func (versionSet *VersionSet) SetLastSequence(s uint64) {
+	versionSet.lastSequence = s
+}
 
+func (versionSet *VersionSet) NumLevelFiles(level int) int {
+	return len(versionSet.current.files[level])
+}
+
+func (versionSet *VersionSet) NewFileNumber() uint64 {
+	versionSet.nextFileNumber++
+	return versionSet.nextFileNumber
 }

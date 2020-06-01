@@ -70,3 +70,7 @@ func (s *SkipList) Get(key *LookupKey, value *string, status *Status) (bool, *St
 	}
 	return false, nil
 }
+
+func (memtable *MemTable) ApproximateMemoryUsage() int {
+	return memtable.arena.memoryUsage
+}
